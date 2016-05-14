@@ -60,3 +60,58 @@ Note: In order to facilitate sharing this part of my senior project, this projec
 Note: Included screenshots show some of the WP API Key Token Authentication endpoints, as well as the administration area.
 
 Note: This was tested on a copy of WordPress pre-API infrastructure merge, using a pre-API infrastructure merge copy of WP-API plugin. It has not been tested since.
+
+
+## Examples ##
+
+Get public key and token via jQuery AJAX:
+
+```
+    var settings = {
+      "async": true,
+      "crossDomain": true,
+      "url": "http://hiroy.club/wp-json/auth/v1/token",
+      "method": "POST",
+      "headers": {
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "data": {
+        "username": "admin",
+        "password": "12345"
+      }
+    }
+    
+    $.ajax(settings).done(function (response) {
+      var key: response.public_key;
+      var token: response.token;
+    });
+```
+
+
+Use key/token to edit post 1:
+
+
+```
+    var settings = {
+      "async": true,
+      "crossDomain": true,
+      "url": "http://local.wordpress-trunk.dev/wp-json/wp/v2/posts/1",
+      "method": "POST",
+      //these would be 
+      "headers": {
+        "x-wp-auth-key": "22a162b2b150ea9d6adec3267e842ffb",
+        "x-wp-auth-token": "7ae00d32169565914c2a7514d913c4c3",
+      },
+      "processData": false,
+      "contentType": false,
+      "mimeType": "multipart/form-data",
+      "data": {
+        'title': "Hello Roy"
+      }
+      
+    }
+    
+    $.ajax(settings).done(function (response) {
+      console.log(response);
+    });
+```
