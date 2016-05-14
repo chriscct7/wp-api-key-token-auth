@@ -33,7 +33,18 @@ There are various ways you can contribute:
 
 ## How It Works ##
 
-This project works as a custom authentication route for the WordPress REST API introduced in WordPress 4.4
+This project works as a custom authentication route for the WordPress REST API introduced in WordPress 4.4.
+
+### Quick Overview ###
+* Create a token by sending username and password in the body of a request to:
+    `mysite.com/wp-json/auth/v1/token/generate`
+* If token already exists send usermame and password to:
+    `mysite.com/wp-json/auth/v1/token/retrieve`
+* Once a token and public key are acquired, send them in x-wp-auth-key and x-wp-auth-token headers to make authenticated requests.
+* See the examples, and detailed explanation below.
+* You should probably use HTTPS to mitigate the risk of MitM attacks.
+
+### Detailed Overview ###
 
 In order to authenticate as a user, a public token and key must be obtained. To obtain a token for a user, a POST request of the WordPress username and password can be sent to mysite.com/wp-json/auth/v1/token/retrieve, which will return a json encoded array of the user's public token, public key, and user ID if the token exists. If the username and/or password is wrong, a 403 HTTP status error will be returned explaining such. If the user does not have a key/token pair, a 403 HTTP status error will be returned saying such.
 
