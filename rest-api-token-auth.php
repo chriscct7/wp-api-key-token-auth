@@ -124,7 +124,7 @@ class Token_Auth {
         // REST API
         add_action( 'rest_api_init',                            array( $this, 'add_api_routes' ) );
         add_filter( 'rest_api_init',                            array( $this, 'add_cors_support' ) );
-        //add_filter( 'determine_current_user',                 array( $this, 'determine_current_user' ), 99 ); 
+        add_filter( 'determine_current_user',                 array( $this, 'determine_current_user' ), 99 );
         add_filter( 'rest_pre_dispatch',                        array( $this, 'rest_pre_dispatch' ), 10, 2 );
         
         // Admin Area
@@ -361,12 +361,12 @@ class Token_Auth {
      */
     public function validate_token( $output = true ) {
         // Check that we're trying to authenticate
-        if ( ! isset( $_SERVER['PHP_AUTH_USER'] ) ) {
-            return $user;
+        if ( ! isset( $_SERVER['HTTP_X_WP_AUTH_KEY'] ) ) {
+            return false;
         }
 
-        $public_key = $_SERVER['PHP_AUTH_USER'];
-        $token      = $_SERVER['PHP_AUTH_PW'];
+        $public_key = $_SERVER['HTTP_X_WP_AUTH_KEY'];
+        $token      = $_SERVER['HTTP_X_WP_AUTH_TOKEN'];
 
         if ( empty( $public_key ) ) {
             return new WP_Error(
