@@ -124,7 +124,7 @@ class Token_Auth {
         // REST API
         add_action( 'rest_api_init',                            array( $this, 'add_api_routes' ) );
         add_filter( 'rest_api_init',                            array( $this, 'add_cors_support' ) );
-        //add_filter( 'determine_current_user',                 array( $this, 'determine_current_user' ), 99 ); 
+        add_filter( 'determine_current_user',                 array( $this, 'determine_current_user' ), 99 );
         add_filter( 'rest_pre_dispatch',                        array( $this, 'rest_pre_dispatch' ), 10, 2 );
         
         // Admin Area
@@ -314,7 +314,8 @@ class Token_Auth {
         /** Let the user modify the data before send it back */
         // todo: docbloc
         $data = apply_filters( 'token_auth_token_before_dispatch_generate', $data, $user );
-        return json_encode( $data );
+	    remove_filter( 'determine_current_user', array( $this, 'determine_current_user' ), 20 );
+	    return rest_ensure_response( $data );
     }
 
     /**
@@ -362,7 +363,7 @@ class Token_Auth {
     public function validate_token( $output = true ) {
         // Check that we're trying to authenticate
         if ( ! isset( $_SERVER['PHP_AUTH_USER'] ) ) {
-            return $user;
+            return false;
         }
 
         $public_key = $_SERVER['PHP_AUTH_USER'];
@@ -401,9 +402,8 @@ class Token_Auth {
             );
         } else {
             $token  = $token;
+	        $public = $public_key;
             $secret = $this->get_user_secret_key( $user );
-            $public = $public_key;
-
             if ( hash_equals( md5( $secret . $public ), $token ) ) {
                 return $user;
             } else {
