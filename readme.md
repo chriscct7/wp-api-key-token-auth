@@ -33,7 +33,18 @@ There are various ways you can contribute:
 
 ## How It Works ##
 
-This project works as a custom authentication route for the WordPress REST API introduced in WordPress 4.4
+This project works as a custom authentication route for the WordPress REST API introduced in WordPress 4.4.
+
+### Quick Overview ###
+* Create a token by sending username and password in the body of a request to:
+    `mysite.com/wp-json/auth/v1/token/generate`
+* If token already exists send usermame and password to:
+    `mysite.com/wp-json/auth/v1/token/retrieve`
+* Once a token and public key are acquired, send them in x-wp-auth-key and x-wp-auth-token headers to make authenticated requests.
+* See the examples, and detailed explanation below.
+* You should probably use HTTPS to mitigate the risk of MitM attacks.
+
+### Detailed Overview ###
 
 In order to authenticate as a user, a public token and key must be obtained. To obtain a token for a user, a POST request of the WordPress username and password can be sent to mysite.com/wp-json/auth/v1/token/retrieve, which will return a json encoded array of the user's public token, public key, and user ID if the token exists. If the username and/or password is wrong, a 403 HTTP status error will be returned explaining such. If the user does not have a key/token pair, a 403 HTTP status error will be returned saying such.
 
@@ -60,3 +71,49 @@ Note: In order to facilitate sharing this part of my senior project, this projec
 Note: Included screenshots show some of the WP API Key Token Authentication endpoints, as well as the administration area.
 
 Note: This was tested on a copy of WordPress pre-API infrastructure merge, using a pre-API infrastructure merge copy of WP-API plugin. It has not been tested since.
+
+
+## Examples ##
+
+Get public key and token via jQuery AJAX:
+
+```
+    var settings = {
+      "async": true,
+      "crossDomain": true,
+      "url": "http://hiroy.club/wp-json/auth/v1/token",
+      "method": "POST",
+      "headers": {
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "data": {
+        "username": "admin",
+        "password": "12345"
+      }
+    }
+    
+    $.ajax(settings).done(function (response) {
+      var key: response.public_key;
+      var token: response.token;
+    });
+```
+
+
+Use key/token to edit post 1:
+
+
+```
+    var settings = {
+      "async": true,
+      "crossDomain": true,
+      "url": "http://local.wordpress-trunk.dev/wp-json/wp/v2/posts/1",
+      "method": "GET",
+      "headers": {
+        "cache-control": "no-cache",
+        "authorization": "Basic MjJhMTYyYjJiMTUwZWE5ZDZhZGVjMzI2N2U4NDJmZmI6N2FlMDBkMzIxNjk1NjU5MTRjMmE3NTE0ZDkxM2M0YzM=",      }
+    }
+    
+    $.ajax(settings).done(function (response) {
+      console.log(response);
+    });
+```
