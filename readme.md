@@ -107,19 +107,10 @@ Use key/token to edit post 1:
       "async": true,
       "crossDomain": true,
       "url": "http://local.wordpress-trunk.dev/wp-json/wp/v2/posts/1",
-      "method": "POST",
-      //these would be 
+      "method": "GET",
       "headers": {
-        "x-wp-auth-key": "22a162b2b150ea9d6adec3267e842ffb",
-        "x-wp-auth-token": "7ae00d32169565914c2a7514d913c4c3",
-      },
-      "processData": false,
-      "contentType": false,
-      "mimeType": "multipart/form-data",
-      "data": {
-        'title': "Hello Roy"
-      }
-      
+        "cache-control": "no-cache",
+        "authorization": "Basic MjJhMTYyYjJiMTUwZWE5ZDZhZGVjMzI2N2U4NDJmZmI6N2FlMDBkMzIxNjk1NjU5MTRjMmE3NTE0ZDkxM2M0YzM=",      }
     }
     
     $.ajax(settings).done(function (response) {
