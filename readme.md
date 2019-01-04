@@ -1,5 +1,7 @@
 # WP API Key Token Authentication #
 
+## This Project Is Not Actively Maintained Currently ##
+
 ### Welcome to our GitHub Repository
 
 This plugin implements a Token/Key/Secret based Authentication method for the WordPress REST API
