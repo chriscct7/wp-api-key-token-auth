@@ -361,12 +361,12 @@ class Token_Auth {
      */
     public function validate_token( $output = true ) {
         // Check that we're trying to authenticate
-        if ( ! isset( $_SERVER['PHP_AUTH_USER'] ) ) {
-            return $user;
+        if ( ! isset( $_SERVER['HTTP_X_WP_AUTH_KEY'] ) ) {
+			return $user;
         }
 
-        $public_key = $_SERVER['PHP_AUTH_USER'];
-        $token      = $_SERVER['PHP_AUTH_PW'];
+        $public_key = $_SERVER['HTTP_X_WP_AUTH_KEY'];
+        $token      = $_SERVER['HTTP_X_WP_AUTH_TOKEN'];
 
         if ( empty( $public_key ) ) {
             return new WP_Error(
